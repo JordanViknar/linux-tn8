@@ -2124,6 +2124,7 @@ static const struct tegra_dc_soc_info tegra20_dc_soc_info = {
 	.has_legacy_blending = true,
 	.pitch_align = 8,
 	.has_powergate = false,
+	.broken_reset = false,
 	.coupled_pm = true,
 	.has_nvdisplay = false,
 	.num_primary_formats = ARRAY_SIZE(tegra20_primary_formats),
@@ -2143,6 +2144,7 @@ static const struct tegra_dc_soc_info tegra30_dc_soc_info = {
 	.has_legacy_blending = true,
 	.pitch_align = 8,
 	.has_powergate = false,
+	.broken_reset = false,
 	.coupled_pm = false,
 	.has_nvdisplay = false,
 	.num_primary_formats = ARRAY_SIZE(tegra20_primary_formats),
@@ -2162,6 +2164,7 @@ static const struct tegra_dc_soc_info tegra114_dc_soc_info = {
 	.has_legacy_blending = true,
 	.pitch_align = 64,
 	.has_powergate = true,
+	.broken_reset = false,
 	.coupled_pm = false,
 	.has_nvdisplay = false,
 	.num_primary_formats = ARRAY_SIZE(tegra114_primary_formats),
@@ -2180,7 +2183,8 @@ static const struct tegra_dc_soc_info tegra124_dc_soc_info = {
 	.supports_block_linear = true,
 	.has_legacy_blending = false,
 	.pitch_align = 64,
-	.has_powergate = true,
+	.has_powergate = false,
+	.broken_reset = true,
 	.coupled_pm = false,
 	.has_nvdisplay = false,
 	.num_primary_formats = ARRAY_SIZE(tegra124_primary_formats),
@@ -2200,6 +2204,7 @@ static const struct tegra_dc_soc_info tegra210_dc_soc_info = {
 	.has_legacy_blending = false,
 	.pitch_align = 64,
 	.has_powergate = true,
+	.broken_reset = false,
 	.coupled_pm = false,
 	.has_nvdisplay = false,
 	.num_primary_formats = ARRAY_SIZE(tegra114_primary_formats),
@@ -2253,6 +2258,7 @@ static const struct tegra_dc_soc_info tegra186_dc_soc_info = {
 	.has_legacy_blending = false,
 	.pitch_align = 64,
 	.has_powergate = false,
+	.broken_reset = false,
 	.coupled_pm = false,
 	.has_nvdisplay = true,
 	.wgrps = tegra186_dc_wgrps,
@@ -2445,19 +2451,21 @@ static int tegra_dc_probe(struct platform_device *pdev)
 	}
 
 	/* assert reset and disable clock */
-	err = clk_prepare_enable(dc->clk);
-	if (err < 0)
-		return err;
+	if (!dc->soc->broken_reset) {
+		err = clk_prepare_enable(dc->clk);
+		if (err < 0)
+			return err;
 
-	usleep_range(2000, 4000);
+		usleep_range(2000, 4000);
 
-	err = reset_control_assert(dc->rst);
-	if (err < 0)
-		return err;
+		err = reset_control_assert(dc->rst);
+		if (err < 0)
+			return err;
 
-	usleep_range(2000, 4000);
+		usleep_range(2000, 4000);
 
-	clk_disable_unprepare(dc->clk);
+		clk_disable_unprepare(dc->clk);
+	}
 
 	if (dc->soc->has_powergate) {
 		if (dc->pipe == 0)
@@ -2531,10 +2539,12 @@ static int tegra_dc_suspend(struct device *dev)
 	struct tegra_dc *dc = dev_get_drvdata(dev);
 	int err;
 
-	err = reset_control_assert(dc->rst);
-	if (err < 0) {
-		dev_err(dev, "failed to assert reset: %d\n", err);
-		return err;
+	if (!dc->soc->broken_reset) {
+		err = reset_control_assert(dc->rst);
+		if (err < 0) {
+			dev_err(dev, "failed to assert reset: %d\n", err);
+			return err;
+		}
 	}
 
 	if (dc->soc->has_powergate)
@@ -2564,10 +2574,13 @@ static int tegra_dc_resume(struct device *dev)
 			return err;
 		}
 
-		err = reset_control_deassert(dc->rst);
-		if (err < 0) {
-			dev_err(dev, "failed to deassert reset: %d\n", err);
-			return err;
+		if (!dc->soc->broken_reset) {
+			err = reset_control_deassert(dc->rst);
+			if (err < 0) {
+				dev_err(dev, "failed to deassert reset: %d\n",
+					err);
+				return err;
+			}
 		}
 	}
 
