@@ -8,7 +8,7 @@
 	compatible = "nvidia,tn8", "nvidia,tegra124";
 
 	aliases {
-		rtc0 = "/i2c@0,7000d000/pmic@40";
+		rtc0 = "/i2c@0,7000d000/pmic@58";
 		rtc1 = "/rtc@0,7000e000";
 	};
 
@@ -23,17 +23,11 @@
 		       0x0 0xae000000 0x0 0x30000000>;
 	};
 
-	clocks {
-		compatible = "simple-bus";
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		clk32k_in: clock@0 {
-			compatible = "fixed-clock";
-			reg = <0>;
-			#clock-cells = <0>;
-			clock-frequency = <32768>;
-		};
+	clk32k_in: clock@0 {
+		compatible = "fixed-clock";
+		reg = <0>;
+		#clock-cells = <0>;
+		clock-frequency = <32768>;
 	};
 
 	framebuffer {
