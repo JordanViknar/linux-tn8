@@ -23,12 +23,60 @@
 		       0x0 0xae000000 0x0 0x30000000>;
 	};
 
+	// 32.768 kHz crystal oscillator
 	clk32k_in: clock@0 {
 		compatible = "fixed-clock";
 		reg = <0>;
 		#clock-cells = <0>;
 		clock-frequency = <32768>;
 	};
+
+	// Pulse Width Modulator (PWM)
+	pwm@7000a000 {
+		status = "okay";
+	};
+
+	// GPIO keys
+	gpio-keys {
+		compatible = "gpio-keys";
+
+		key-power {
+			label = "Power";
+			gpios = <&gpio TEGRA_GPIO(Q, 0) GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_POWER>;
+			debounce-interval = <10>;
+			wakeup-source;
+		};
+
+		key-volume-down {
+			label = "Volume Down";
+			gpios = <&gpio TEGRA_GPIO(Q, 7) GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_VOLUMEDOWN>;
+			debounce-interval = <10>;
+		};
+
+		key-volume-up {
+			label = "Volume Up";
+			gpios = <&gpio TEGRA_GPIO(Q, 6) GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_VOLUMEUP>;
+			debounce-interval = <10>;
+		};
+	};
+	extcon-keys {
+		compatible = "gpio-keys";
+
+		// Cover / keyboard dock lid sense
+		sw-lid {
+			label = "Lid Switch";
+			gpios = <&gpio TEGRA_GPIO(R, 4) GPIO_ACTIVE_LOW>;
+			linux,code = <SW_LID>;
+			linux,input-type = <EV_SW>;
+			wakeup-source;
+			debounce-interval = <300>;
+		};
+	};
+
+	// --- TO BE REMOVED ---
 
 	framebuffer {
 		compatible = "simple-framebuffer";
