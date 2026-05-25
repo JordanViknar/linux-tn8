@@ -81,8 +81,7 @@
 		status = "okay";
 	};
 
-	// ---------------- UNFINISHED ----------------
-
+	// --- UNFINISHED ---
 	i2c@7000c000 {
 		status = "okay";
 		clock-frequency = <100000>;
@@ -123,6 +122,13 @@
 		};
 	};
 
+	sdhci@700b0600 {
+		status = "okay";
+		bus-width = <8>;
+		non-removable;
+		// ADD REGULATORS
+	};
+
 	// --- TO BE REMOVED ---
 
 	framebuffer {
@@ -134,7 +140,7 @@
 		format = "a8b8g8r8";
 	};
 
-	// PINMUX
+	// --- PINMUX ---
 	pinmux: pinmux@70000868 {
 		pinctrl-names = "default";
 		pinctrl-0 = <&state_boot>;
