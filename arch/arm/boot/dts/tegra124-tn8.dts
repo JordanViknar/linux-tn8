@@ -8,7 +8,7 @@
 	compatible = "nvidia,tn8", "nvidia,tegra124";
 
 	aliases {
-		rtc0 = "/i2c@0,7000d000/pmic@58";
+		rtc0 = &palmas;
 		rtc1 = "/rtc@0,7000e000";
 	};
 
@@ -24,11 +24,11 @@
 	};
 
 	// 32.768 kHz crystal oscillator
-	clk32k_in: clock@0 {
+	clk32k_in: clock-32k {
 		compatible = "fixed-clock";
-		reg = <0>;
 		#clock-cells = <0>;
 		clock-frequency = <32768>;
+		clock-output-names = "ref-oscillator";
 	};
 
 	// Pulse Width Modulator (PWM)
@@ -73,6 +73,53 @@
 			linux,input-type = <EV_SW>;
 			wakeup-source;
 			debounce-interval = <300>;
+		};
+	};
+
+	// High Definition Audio (HDA)
+	hda@70030000 {
+		status = "okay";
+	};
+
+	// ---------------- UNFINISHED ----------------
+
+	i2c@7000c000 {
+		status = "okay";
+		clock-frequency = <100000>;
+	};
+
+	i2c@7000c400 {
+		status = "okay";
+		clock-frequency = <100000>;
+	};
+
+	i2c@7000d000 {
+		status = "okay";
+		clock-frequency = <400000>;
+
+		palmas: pmic@58 {
+			compatible = "ti,tps65913", "ti,palmas";
+			reg = <0x58>;
+			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
+
+			#interrupt-cells = <2>;
+			interrupt-controller;
+
+			ti,system-power-controller;
+
+			palmas_gpio: gpio {
+				compatible = "ti,palmas-gpio";
+				gpio-controller;
+				#gpio-cells = <2>;
+			};
+
+			// INSERT REGULATORS
+
+			rtc {
+				compatible = "ti,palmas-rtc";
+				interrupt-parent = <&palmas>;
+				interrupts = <8 0>;
+			};
 		};
 	};
 
