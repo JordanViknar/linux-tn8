@@ -81,6 +81,37 @@
 		status = "okay";
 	};
 
+	// Power State Coordination Interface (PSCI)
+	psci {
+		compatible = "arm,psci-0.2";
+		method = "smc";
+	};
+	// CPUs
+	cpus {
+		cpu@0 {
+			vdd-cpu-supply = <&vdd_cpu>;
+			enable-method = "psci";
+		};
+
+		cpu@1 {
+			enable-method = "psci";
+		};
+
+		cpu@2 {
+			enable-method = "psci";
+		};
+
+		cpu@3 {
+			enable-method = "psci";
+		};
+	};
+	// Clock controller
+	clock@70110000 {
+		status = "okay";
+		nvidia,i2c-fs-rate = <400000>;
+		vdd-cpu-supply = <&vdd_cpu>;
+	};
+
 	// --- UNFINISHED ---
 	i2c@7000c000 {
 		status = "okay";
