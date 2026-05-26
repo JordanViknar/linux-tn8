@@ -13,7 +13,7 @@
 	};
 
 	chosen {
-		bootargs = "console=tty1 gpt fbcon=rotate:2 earlyprintk clk_ignore_unused";
+		bootargs = "panic=5 console=tty1 gpt fbcon=rotate:2 earlyprintk clk_ignore_unused root=/dev/mmcblk0p23 rootfstype=ext4 rw rootwait rootflags=defaults,noatime,nodiratime rootsubdir=/media/0/multirom/roms/nvleaf-0.0.2-dev/root";
 		linux,initrd-start = <0x81680000>;
 		linux,initrd-end = <0x82800000>;
 	};
@@ -112,7 +112,177 @@
 				#gpio-cells = <2>;
 			};
 
-			// INSERT REGULATORS
+			pmic {
+				compatible = "ti,tps65913-pmic", "ti,palmas-pmic";
+				ldo1-in-supply = <&palmas_smps6_reg>;
+				ldo5-in-supply = <&palmas_smps8_reg>;
+				ldo9-in-supply = <&palmas_smps9_reg>;
+				ldoln-in-supply = <&palmas_smps10_out2_reg>;
+				ldousb-in-supply = <&palmas_smps10_out2_reg>;
+
+				regulators {
+					/* CPU core voltage (SMPS123, 0.65–1.4V) */
+					vdd_cpu: smps123 {
+						regulator-name = "vdd-cpu";
+						regulator-min-microvolt = <650000>;
+						regulator-max-microvolt = <1400000>;
+						regulator-always-on;
+						regulator-boot-on;
+					};
+
+					/* GPU core voltage (SMPS45, 0.7–1.4V) */
+					vdd_gpu: smps45 {
+						regulator-name = "vdd-gpu";
+						regulator-min-microvolt = <700000>;
+						regulator-max-microvolt = <1400000>;
+						regulator-init-microvolt = <1000000>;
+						regulator-always-on; // --- Could be necessary
+						//regulator-boot-on;
+					};
+
+					/* DDR voltage (SMPS6, fixed 1.35V) */
+					palmas_smps6_reg: smps6 {
+						regulator-name = "vddio-ddr";
+						// regulator-min-microvolt = <1350000>;
+						// regulator-max-microvolt = <1350000>;
+						regulator-always-on;
+						regulator-boot-on;
+					};
+
+					/* SoC core voltage (SMPS7, 0.7–1.4V) */
+					smps7 {
+						regulator-name = "vdd-core";
+						regulator-min-microvolt = <700000>;
+						regulator-max-microvolt = <1400000>;
+						regulator-always-on;
+						regulator-boot-on;
+					};
+
+					/* 1.8V I/O rail (SMPS8) */
+					palmas_smps8_reg: smps8 {
+						regulator-name = "vdd-1v8";
+						//regulator-min-microvolt = <1800000>;
+						//regulator-max-microvolt = <1800000>;
+						regulator-always-on;
+						regulator-boot-on;
+					};
+
+					/* 3.3V sensor / SDMMC3 rail (SMPS9) */
+					palmas_smps9_reg: smps9 {
+						regulator-name = "vdd-snsr";
+						regulator-min-microvolt = <3300000>;
+						regulator-max-microvolt = <3300000>;
+						regulator-always-on;
+						regulator-boot-on;
+					};
+
+					/* 5V output 1 (SMPS10_OUT1) */
+					palmas_smps10_out1_reg: smps10_out1 {
+						regulator-name = "vdd-out1-5v0";
+						regulator-min-microvolt = <5000000>;
+						regulator-max-microvolt = <5000000>;
+					};
+
+					/* 5V output 2 (SMPS10_OUT2) */
+					palmas_smps10_out2_reg: smps10_out2 {
+						regulator-name = "vdd-out2-5v0";
+						regulator-min-microvolt = <5000000>;
+						regulator-max-microvolt = <5000000>;
+					};
+
+					/* PLL supply (LDO1, 1.05V) */
+					ldo1 {
+						regulator-name = "avdd-pll";
+						//regulator-min-microvolt = <1050000>;
+						//regulator-max-microvolt = <1050000>;
+						regulator-always-on;
+						regulator-boot-on;
+					};
+
+					/* LCD AVDD / touch analogue (LDO2, 3.3V) */
+					avdd_lcd: ldo2 {
+						regulator-name = "avdd-lcd";
+						regulator-min-microvolt = <3300000>;
+						regulator-max-microvolt = <3300000>;
+						regulator-boot-on;
+						regulator-always-on; // TEMPORARY
+					};
+
+					/* Touch supply (LDO3, 3.0V) */
+					ldo3 {
+						regulator-name = "vdd-touch";
+						regulator-min-microvolt = <3300000>;
+						regulator-max-microvolt = <3300000>;
+						regulator-enable-ramp-delay = <3000>;
+						ti,disable-pull-down;
+					};
+
+					/* Camera AVDD (LDO4, 2.7V) */
+					ldo4 {
+						regulator-name = "avdd-cam1";
+						regulator-min-microvolt = <2700000>;
+						regulator-max-microvolt = <2700000>;
+					};
+
+					/* DSI/CSI supply (LDO5, 1.2V) */
+					ldo5_reg: ldo5 {
+						regulator-name = "avdd-dsi-csi";
+						//regulator-min-microvolt = <1200000>;
+						//regulator-max-microvolt = <1200000>;
+						regulator-always-on; // TEMPORARY
+						regulator-boot-on; // TEMPORARY
+					};
+
+					/* Fuse blow (LDO6, 1.8V) */
+					ldo6 {
+						regulator-name = "vpp-fuse";
+						regulator-min-microvolt = <1800000>;
+						regulator-max-microvolt = <1800000>;
+					};
+
+					/* Camera AF VCM (LDO7, 2.7V) */
+					ldo7 {
+						regulator-name = "avdd-cam-af";
+						regulator-min-microvolt = <2700000>;
+						regulator-max-microvolt = <2700000>;
+					};
+
+					/* RTC supply (LDO8, 0.95V) */
+					ldo8 {
+						regulator-name = "vdd-rtc";
+						regulator-min-microvolt = <950000>;
+						regulator-max-microvolt = <950000>;
+						regulator-always-on;
+						regulator-boot-on;
+						ti,enable-ldo8-tracking;
+					};
+
+					/* LDO9: variable 1.8/3.3 V for microSD I/O */
+					ldo9 {
+						regulator-name = "vddio-sdmmc-2";
+						regulator-min-microvolt = <1800000>;
+						regulator-max-microvolt = <3300000>;
+					};
+
+					/* LDOLN – HDMI / HV I/O supply */
+					ldoln_reg: ldoln {
+						regulator-name = "vddio-hv";
+						// regulator-min-microvolt = <3300000>;
+						// regulator-max-microvolt = <3300000>;
+						regulator-always-on;
+						regulator-boot-on;
+					};
+
+					/* LDOUSB – USB PHY AVDD 3.3 V */
+					ldousb_reg: ldousb {
+						regulator-name = "avdd-usb";
+						// regulator-min-microvolt = <3300000>;
+						// regulator-max-microvolt = <3300000>;
+						regulator-always-on;
+						regulator-boot-on;
+					};
+				};
+			};
 
 			rtc {
 				compatible = "ti,palmas-rtc";
