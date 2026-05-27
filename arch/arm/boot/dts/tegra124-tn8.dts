@@ -330,6 +330,86 @@
 		// ADD REGULATORS
 	};
 
+	vdd_ac_bat_reg: regulator-acbat {
+		compatible = "regulator-fixed";
+		regulator-name = "vdd_ac_bat";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		regulator-always-on;
+	};
+	en_lcd_bl: regulator-lcden {
+		compatible = "regulator-fixed";
+		regulator-name = "en-lcd-bl";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		regulator-boot-on;
+		gpio = <&gpio TEGRA_GPIO(H, 2) GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+	};
+	vddio_sd: regulator-sdmmc3 {
+		compatible = "regulator-fixed";
+		regulator-name = "vddio_sd";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio TEGRA_GPIO(R, 0) GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		vin-supply = <&palmas_smps9_reg>;
+	};
+	vddio_dvdd_lcd: regulator-lcd {
+		compatible = "regulator-fixed";
+		regulator-name = "vddio_dvdd_lcd";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		gpio = <&palmas_gpio 6 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		vin-supply = <&palmas_smps8_reg>;
+	};
+	vdd_cam_af: regulator-cam {
+		compatible = "regulator-fixed";
+		regulator-name = "vdd_cam_af";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		gpio = <&palmas_gpio 4 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		vin-supply = <&palmas_smps8_reg>;
+	};
+	vdd_hdmi_n5: regulator-hdmi {
+		compatible = "regulator-fixed";
+		regulator-name = "vdd-hdmi-n5";
+		regulator-min-microvolt = <1200000>;
+		regulator-max-microvolt = <1200000>;
+		enable-active-high;
+		gpio = <&gpio TEGRA_GPIO(N, 5) GPIO_ACTIVE_HIGH>;
+		vin-supply = <&palmas_smps6_reg>;
+	};
+	vdd_hdmi_5v0: regulator-hdmicon {
+		compatible = "regulator-fixed";
+		regulator-name = "vdd_hdmi_5v0";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpio = <&gpio TEGRA_GPIO(K, 6) GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		vin-supply = <&palmas_smps10_out1_reg>;
+	};
+	vdd_ts_1v8: regulator-ts-1v8 {
+		compatible = "regulator-fixed";
+		regulator-name = "vdd_ts_1v8";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		gpio = <&gpio TEGRA_GPIO(K, 1) GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		vin-supply = <&palmas_smps8_reg>;
+	};
+	avdd_ts_3v3: regulator-ts-3v3 {
+		compatible = "regulator-fixed";
+		regulator-name = "avdd_ts_3v3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&palmas_gpio 2 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		vin-supply = <&ldousb_reg>;
+	};
+	
 	// --- TO BE REMOVED ---
 
 	framebuffer {
