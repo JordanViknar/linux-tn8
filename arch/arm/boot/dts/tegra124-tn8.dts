@@ -409,9 +409,30 @@
 		enable-active-high;
 		vin-supply = <&ldousb_reg>;
 	};
-	
-	// --- TO BE REMOVED ---
 
+	/*host1x@50000000 {
+		dsi@54300000 {
+			status = "okay";
+
+			avdd-dsi-csi-supply = <&ldo5_reg>;
+
+			panel@0 {
+				compatible = "auo,b080uan01";
+				reg = <0>;
+
+				//avdd-supply = <&avdd_lcd>;
+				power-supply = <&vddio_dvdd_lcd>;
+
+				//backlight = <&backlight>;
+			};
+		};
+	};*/
+	gpu@57000000 {
+		status = "okay";
+		vdd-supply = <&vdd_gpu>;
+	};
+
+	// TO BE REMOVED
 	framebuffer {
 		compatible = "simple-framebuffer";
 		reg = <0x0 0xad012000 0x0 (1216 * 1920 * 4)>;
