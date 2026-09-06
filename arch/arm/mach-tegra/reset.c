@@ -51,7 +51,7 @@ static void __init tegra_cpu_reset_handler_set(const u32 reset_address)
 		 * on. We're not really turning it on - firmware just also
 		 * happens to save this address when we make this call, and
 		 * that's the only way we've found to give it the address.
-		 * The Tegra4Linux does the exact same thing.
+		 * The Tegra4Linux kernel does the exact same thing.
 		 */
 		int ret = psci_ops.cpu_on(0, reset_address);
 

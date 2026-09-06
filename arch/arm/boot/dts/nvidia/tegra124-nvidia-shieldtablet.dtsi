@@ -307,7 +307,7 @@
 		};
 
 		charger: charger@6b {
-			compatible = "ti,bq24193", "ti,bq24192"; // CONFIG_CHARGER_BQ24190
+			compatible = "ti,bq24192"; // CONFIG_CHARGER_BQ24190
 			reg = <0x6b>;
 
 			interrupt-parent = <&gpio>;
@@ -688,12 +688,13 @@
 	};
 
 	/* MicroSD */
-	/* 
-	 * UNFINISHED. Enable at your own risk.
-	 */
 	sdmmc3: mmc@700b0400 {
-		status = "disabled";
+		status = "okay";
 		bus-width = <4>;
+
+		/* Not tested yet */
+		// sd-uhs-sdr104;
+		// mmc-ddr-1_8v;
 
 		cd-gpios = <&gpio TEGRA_GPIO(V, 2) GPIO_ACTIVE_LOW>;
 

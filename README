@@ -23,27 +23,28 @@ Current Status
 
 Fully functional:
 
-* All CPU cores
-* Internal eMMC (HS200)
-* Fuel gauge (using custom driver `lc709203f`)
-* Charger (using `bq24193`)
-* Power monitor (using `ina3221`)
-* Thermal sensors (using `tegra_soctherm` & `generic_adc_thermal`)
+* Backlight
+* Battery Fuel Gauge: onsemi LC709203F (custom driver: `lc709203f`)
+* Charger: TI BQ24192 (driver: `bq24190-charger`)
+* CPU: 4x 2.1 GHz Cortex-A15
 * DRM (`tegradrm` & `simpledrm`)
-* Backlight (any choppiness is not kernel-related)
-* Accelerometer + gyroscope (using `inv-mpu6050-i2c`)
-* Magnetometer (using `ak8975`)
-
-Fully functional, with quirks:
-
-* Audio (RT5639 codec)
-* Bluetooth (using `hci_bcm`)
-* Wi-Fi (using `brcmfmac`)
-* Touchscreen (using custom driver `raydium-rm31080-spi-bridge`)
+* eMMC: SanDisk SDW16G
 * Hardware keys: "Power", "Volume Up", "Volume Down", "Lid Switch" function
   perfectly. "Tablet Mode" (Stylus Pen Detect) is untested, as the K1 model
   doesn't have it. "Camera Focus" is configured by downstream, but seems to be an
   oddity.
+* Magnetometer: Asahi Kasei AK8963 (driver: `ak8975`)
+* Motion Tracking: Invensense MPU6515 (driver: `inv-mpu6050-i2c`)
+* SD card slot (not at full potential speed yet)
+* Thermal sensors (using `tegra_soctherm` & `generic_adc_thermal`)
+* Voltage Monitor: TI INA3221 (driver: `ina3221`)
+
+Fully functional, with quirks:
+
+* Audio: Realtek RT5639 Codec
+* Bluetooth: Broadcom BCM43241B0 (using `hci_bcm`)
+* Touchscreen: Raydium RM31080 (using custom driver `raydium-rm31080-spi-bridge`)
+* Wi-Fi: Broadcom BCM43241B0 (using `brcmfmac`)
 
 Partially functional:
 
@@ -68,7 +69,6 @@ Configured, untested :
 
 Non-functional / not worked on yet:
 
-* SD card reader
 * USB device and host
 * GPS
 * Camera
@@ -188,20 +188,20 @@ Previous mainline ports:
 * Alexandre Courbot, for his original basic Linux 3.17 mainline port,
   conveniently saved from deletion by Andrew Querol:
   https://github.com/winsock/linux/tree/st8
-* Aaron Kling, for his more recent partial device trees for the NVIDIA SHIELD Tablet:
+* Aaron Kling, for his more recent partial device trees for the NVIDIA SHIELD Tablet 
+  and Ardbeg :
   https://gitlab.incom.co/CM-Shield/android_hardware_nvidia_t124_lineage/-/blob/lineage-24.0/tegra124-tn8.dts
-  and Ardbeg:
   https://gitlab.incom.co/CM-Shield/android_hardware_nvidia_t124_lineage/-/blob/lineage-24.0/tegra124-ardbeg.dts
 
 Other mainline ports:
 
 * `tegra124-xiaomi-mocha.dts`: Similar-ish device used for some comparisons and
-  general structure.
+  general structure. Heavily helpful.
 * `tegra30-asus-nexus7-grouper-common.dtsi`: Helped me with audio support.
 * `tegra234-p3737-0000+p3701.dtsi` and `tegra234-p3740-0002+p3701-0008.dts`:
   Helped me tremendously with headphones support.
 
-Downstream kernel:
+Downstream kernels:
 
 * The original Linux4Tegra port's downstream DTS was used as base :
   https://xdaforums.com/t/linux4tegra-r23-1-r24-1-beta-for-the-shield-tablet.2985238/
@@ -210,7 +210,7 @@ Downstream kernel:
 * LineageOS's downstream kernel for the NVIDIA SHIELD Tablet was also used as base :
   https://github.com/LineageOS/android_kernel_nvidia_shield
 
------------------------------------------------
+--------------------------------------------------------------------------------
 
 Linux kernel
 ============
