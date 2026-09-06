@@ -7,7 +7,7 @@ models, but not necessarily other bootloader versions. Use this kernel at your
 own risk, as it is still in a fairly experimental state.
 
 In other words, when using this kernel, you agree to the possibility of hardware
-damage.
+damage. I've had none so far, but cannot guarantee you won't.
 
 Android M/N bootloader compatibility is not immediately planned due to
 seemingly stricter requirements (no initramfs unless bundled in-kernel, smaller

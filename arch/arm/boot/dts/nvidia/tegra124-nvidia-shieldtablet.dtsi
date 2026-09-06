@@ -689,10 +689,7 @@
 
 	/* MicroSD */
 	/* 
-	 * UNFINISHED. My personal unit might have a dead SD card port.
-	 * Whether this was caused by the port is not known.
-	 * By enabling this node, you agree to the risk of damage to
-	 * your device.
+	 * UNFINISHED. Enable at your own risk.
 	 */
 	sdmmc3: mmc@700b0400 {
 		status = "disabled";
