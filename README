@@ -7,7 +7,7 @@ models, but not necessarily other bootloader versions. Use this kernel at your
 own risk, as it is still in a fairly experimental state.
 
 In other words, when using this kernel, you agree to the possibility of hardware
-damage. I've had none so far, but cannot guarantee you won't.
+damage.
 
 Android M/N bootloader compatibility is not immediately planned due to
 seemingly stricter requirements (no initramfs unless bundled in-kernel, smaller
@@ -24,7 +24,7 @@ Current Status
 Fully functional:
 
 * All CPU cores
-* Internal eMMC
+* Internal eMMC (HS200)
 * Fuel gauge (using custom driver `lc709203f`)
 * Charger (using `bq24193`)
 * Power monitor (using `ina3221`)

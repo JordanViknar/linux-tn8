@@ -16,8 +16,8 @@
 
 	aliases {
 		mmc0 = &sdmmc4; /* eMMC */
-		/* uSD to implement */
-		mmc1 = &sdmmc1; /* WiFi */
+		mmc1 = &sdmmc3; /* uSD slot */
+		mmc2 = &sdmmc1; /* WiFi */
 
 		rtc0 = &palmas;
 		rtc1 = "/rtc@0,7000e000";
@@ -602,7 +602,7 @@
 					};
 
 					/* LDO9: variable 1.8/3.3 V for microSD I/O */
-					ldo9 {
+					vddio_sdmmc3: ldo9 {
 						regulator-name = "vddio-sdmmc-2";
 						regulator-min-microvolt = <1800000>;
 						regulator-max-microvolt = <3300000>;
@@ -641,11 +641,7 @@
 		clock-frequency = <400000>;
 	};
 
-	/* UNFINISHED */
 	pmc@7000e400 {
-		// nvidia,invert-interrupt; --- Downstream uses it, but mainline gets crashed ?
-
-		/* --- VERIFY THE VALUES --- */
 		nvidia,suspend-mode = <1>;
 		nvidia,cpu-pwr-good-time = <500>;
 		nvidia,cpu-pwr-off-time = <300>;
@@ -656,6 +652,7 @@
 		core-supply = <&vdd_core>;
 
 		/* Clear DEV_ON bit in DEV_CTRL register of TPS65913 PMIC  */
+		/* Is that relevant on the SHIELD Tablet ? */
 		i2c-thermtrip {
 			nvidia,i2c-controller-id = <4>;
 			nvidia,bus-addr = <0x58>;
@@ -690,14 +687,33 @@
 		};
 	};
 
-	/* uSD to be implemented */
+	/* MicroSD */
+	/* 
+	 * UNFINISHED. My personal unit might have a dead SD card port.
+	 * Whether this was caused by the port is not known.
+	 * By enabling this node, you agree to the risk of damage to
+	 * your device.
+	 */
+	sdmmc3: mmc@700b0400 {
+		status = "disabled";
+		bus-width = <4>;
+
+		cd-gpios = <&gpio TEGRA_GPIO(V, 2) GPIO_ACTIVE_LOW>;
+
+		vmmc-supply = <&vddio_sd>;
+		vqmmc-supply = <&vddio_sdmmc3>;
+	};
 
 	/* eMMC */
-	/* UNFINISHED */
 	sdmmc4: mmc@700b0600 {
 		status = "okay";
 		bus-width = <8>;
+
+		mmc-hs200-1_8v;
 		non-removable;
+
+		vmmc-supply = <&palmas_smps9_reg>;
+		vqmmc-supply = <&palmas_smps8_reg>;
 	};
 
 	/* CPU DFLL clock */
